@@ -1,0 +1,10 @@
+.container{
+  margin: 30px 50px;
+}
+
+.msg-input{
+  width: 300px;
+  height: 32px;
+  font-size: 16px;
+  margin-right: 8px;
+}
