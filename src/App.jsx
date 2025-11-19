@@ -1,54 +1,32 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [data, setData] = useState([]);
+  const [number, setNumber] = useState(0);
+  const [result, setResult] = useState(0);
 
   useEffect(() => {
-    if (window.msg) {
-      window.msg.onFromMain((data) => {
-        setMessages((prev) => [...prev, data]);
-      });
-    }
+    window.api.onMultiplyResult((data) => {
+      const { value, error } = data || {};
+      if (value) {
+        setResult(value)
+      } else {
+        console.log("Please send valid .")
+      }
+    });
   }, []);
 
-  const sendMessage = () => {
-    if (input === "") return;
-    if (window.msg) {
-      window.msg.sendToMain(input);
-      setInput("");
-    }
-  };
-
+  const handleClick = ()=>{
+    window.api.sendNumber(number);
+  }
   return (
-    <div className="container">
-      <h2>Electron IPC Demo</h2>
-      <p>Communication between Renderer to Main to Child Process</p>
-      <input
-        className="msg-input"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message"
-      />
-      <button onClick={sendMessage}>Send</button>
-      <hr />
-      <div style={{ marginTop: 10 }}>
-        <h3>Messages:</h3>
-        <pre>{messages.join("\n")}</pre>
-      </div>
-      <table>
-        <tbody>
-          {data &&
-            data.map((post, i) => (
-              <tr key={i}>
-                <td>{post.name}</td>
-                <td>{post.email}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+    <div>
+      <h1>IPC</h1>
+      <label>
+        Enter a number:
+        <input id="num" type="number"  onChange={e => setNumber(e.target.value)} />
+      </label>
+      <button id="sendBtn" onClick={handleClick} >Send to  Main → Child</button>
+      <h3>Multpliyed by 2 : {result}</h3> 
     </div>
   );
 }
